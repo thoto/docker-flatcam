@@ -21,7 +21,13 @@ RUN apt-get update -y && export DEBIAN_FRONTEND=noninteractive && \
 RUN useradd -m flatcam
 
 USER flatcam
-WORKDIR /home/flatcam
-RUN mkdir ~data
+RUN mkdir ~/data && mkdir -p ~/.FlatCAM/preprocessors/
+COPY --chown=flatcam:flatcam factory_defaults.FlatConfig \
+	/home/flatcam/.FlatCAM/factory_defaults.FlatConfig
+COPY --chown=flatcam:flatcam factory_defaults.FlatConfig \
+	/home/flatcam/.FlatCAM/current_defaults.FlatConfig
+COPY --chown=flatcam:flatcam CAMMGL.py \
+	/home/flatcam/.FlatCAM/preprocessors/CAMMGL.py
 
+WORKDIR /home/flatcam/data
 CMD [ "python3", "/flatcam/FlatCAM.py" ]
